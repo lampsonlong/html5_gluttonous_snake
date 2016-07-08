@@ -12,13 +12,12 @@
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/common.js"></script>
-<script src="js/newSnake.js"></script>
+<script src="js/game.js"></script>
+<script src="js/snake.js"></script>
 <script src="js/bootstrap.min.js"></script>
 
 </head>
 <body>
-
-
 
 <div class="container-fluid" align="center">
 	<h1>Gluttonous Snake</h1>
@@ -28,18 +27,30 @@
 	
 	<div class="row" style="margin-top:5em;">
 	<div class="col-sm-offset-2 col-sm-2">
-		<div id="p1scoreDiv">
-		<label for="p1">P1</label>
-		<p class="bg-primary" id="p1score" style="font-size:4em;"></p>
+		<div id="p1block">
+			<div id="p1scoreDiv">
+			<label for="p1">P1</label>
+			<p class="bg-primary" id="p1score" style="font-size:4em;"></p>
+			</div>
+			<div id="p1statusDiv">
+				<span class="glyphicon glyphicon-refresh" id="p1_status1" style="font-size:2em;"></span>
+				<span class="glyphicon glyphicon-star" id="p1_status2" style="font-size:2em;"></span>
+			</div>
 		</div>
 	</div>
     <div class="col-sm-6" id="canvasDiv" style="width:550px;">
     	<img src="img/snakelogo.jpg" width="100%" class="img-rounded">
     </div>
     <div class="col-sm-2">
-    	<div id="p2scoreDiv">
-		<label for="p2">P2</label>
-		<p class="bg-danger" id="p2score" style="font-size:4em;"></p>
+    	<div id="p2block">
+	    	<div id="p2scoreDiv">
+			<label for="p2">P2</label>
+			<p class="bg-danger" id="p2score" style="font-size:4em;"></p>
+			</div>
+			<div id="p2statusDiv">
+				<span class="glyphicon glyphicon-refresh" id="p2_status1"  style="font-size:2em;"></span>
+				<span class="glyphicon glyphicon-star" id="p2_status2" style="font-size:2em;"></span>
+			</div>
 		</div>
 	</div>
     </div>
@@ -57,7 +68,7 @@
 					<div class="dropdown">
 					  <label for="dropdown">速度:</label>
 					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					    <span id="showSpd">慢</span>
+					    <span id="showSpd">快</span>
 					    <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -70,13 +81,25 @@
 
 					<div class="dropdown">
 					  <label for="dropdown">尺寸:</label>
-					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					    <span id="showSize">25x15</span>
 					    <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 					    <li><a href="javascript:void(0);" onclick="setSize(1,$(this).html());">25x15</a></li>
 					    <li><a href="javascript:void(0);" onclick="setSize(2,$(this).html());">40x25</a></li>
+					  </ul>
+					</div>
+					
+					<div class="dropdown">
+					  <label for="dropdown">边界:</label>
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    <span id="showWall">有边界</span>
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					    <li><a href="javascript:void(0);" onclick="setWall(true,$(this).html());">有边界</a></li>
+					    <li><a href="javascript:void(0);" onclick="setWall(false,$(this).html());">无边界</a></li>
 					  </ul>
 					</div>
 				</div>

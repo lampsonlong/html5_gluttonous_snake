@@ -1,9 +1,12 @@
 var canvasWidth = 500; // 画布の長さ
 var canvasHeight = 300; // 画布の幅
 var pLong = 20; // ピクセルの長さ
-var p1key = 4;
-var p2key = 2;
-var speed = 500;
+var p1key;
+var p2key;
+var speed = 100;
+var model = 1;  // 1:一人モード  2:二人バトルモード
+var wall = true;
+var doubleFood = 0;
 
 $(window).keydown(function(event){
 	if(event.which == "38"){
@@ -19,7 +22,6 @@ $(window).keydown(function(event){
 		// rightキー
 		p2key = 4;
 	}
-	
 	
 	if(event.which == "87"){
 		// upキー
@@ -42,11 +44,34 @@ $(document).ready(function(){
 
 function init(){
 	$("#showDiv").hide();
-	$("#p1scoreDiv").hide();
+	$("#p1block").hide();
 	$("#p1score").html("0");
-	$("#p2scoreDiv").hide();
+	$("#p2block").hide();
 	$("#p2score").html("0");
+	p1key = 4;
+	p2key = 2;
 }
+
+function initModel1(){
+	$("#p1block").show();
+	$("#p1statusDiv span").each(function(){
+		$(this).hide();
+	});
+}
+
+function initModel2(){
+	$("#p1block").show();
+	$("#p2block").show();
+	
+	$("#p1statusDiv span").each(function(e){
+		$(this).hide();
+	});
+	
+	$("#p2statusDiv span").each(function(e){
+		$(this).hide();
+	});
+}
+
 
 // Canvas初期化
 function prepareCanvas()
@@ -67,14 +92,14 @@ function prepareCanvas()
 	initBackground();
 }
 
-function start(p){
+function start(m){
 	init();
+	model = m;
 	$(".startBtn").hide();
 	$("#canvasDiv").html("");
 	
 	showTime();
-	setTimeout("startNewGame("+p+")",4000);
-	
+	setTimeout("startNewGame()",4000);
 }
 
 function showTime(){
@@ -90,19 +115,16 @@ function showResult(ret){
 	$("#showDiv").html(ret);
 	$("#showDiv").fadeIn(1000);
 	setTimeout("$('.startBtn').show();",1000);
-	p1key = 4;
-	p2key = 2;
 }
 
 function startNewGame(p){
-	if(p == "1"){
-		$("#p1scoreDiv").show();
-	} else if (p == "2"){
-		$("#p1scoreDiv").show();
-		$("#p2scoreDiv").show();
+	if(model == 1){
+		initModel1();
+	} else if (model == 2){
+		initModel2();
 	}
 
-	var newgame = new Game(p);
+	var newgame = new Game();
 	newgame.CreateFood();
 	newgame.Start();
 }
@@ -125,6 +147,11 @@ function initBackground(){
 	}
 }
 
+function setWall(wa, text){
+	wall = wa;
+	$("#showWall").html(text);
+}
+
 function setSpeed(spd, text){
 	speed = spd;
 	$("#showSpd").html(text);
@@ -136,18 +163,18 @@ function setSize(size,text){
 	if(size == 1){
 		canvasWidth = 500;
 		canvasHeight = 300;
-		$("#p1scoreDiv").parent().removeClass();
-		$("#p1scoreDiv").parent().addClass("col-sm-offset-2 col-sm-2");
-		$("#p2scoreDiv").parent().removeClass();
-		$("#p2scoreDiv").parent().addClass("col-sm-2");
+		$("#p1block").parent().removeClass();
+		$("#p1block").parent().addClass("col-sm-offset-2 col-sm-2");
+		$("#p2block").parent().removeClass();
+		$("#p2block").parent().addClass("col-sm-2");
 		$(".jumbotron").css("height",(canvasHeight+60)+'px');
 	} else if (size == 2){
 		canvasWidth = 800;
 		canvasHeight = 500;
-		$("#p1scoreDiv").parent().removeClass();
-		$("#p1scoreDiv").parent().addClass("col-sm-offset-1 col-sm-2");
-		$("#p2scoreDiv").parent().removeClass();
-		$("#p2scoreDiv").parent().addClass("col-sm-2");
+		$("#p1block").parent().removeClass();
+		$("#p1block").parent().addClass("col-sm-offset-1 col-sm-2");
+		$("#p2block").parent().removeClass();
+		$("#p2block").parent().addClass("col-sm-2");
 		$(".jumbotron").css("height",(canvasHeight+60)+'px');
 	}
 	

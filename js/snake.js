@@ -1,151 +1,198 @@
+function Snake(n,x,y,w,c){
+	this.name = n;
+	this.head = new Object();
+	this.head.x = x;
+	this.head.y = y;
 
-function Snake(){
-	this.self = this;
 	this.body = new Array();
+	this.body.push(this.head);
 	this.tail = new Object();
-	this.food = new Object();
-	this.get = function(){return this.Move(self);}
-	this.innervalID = null;
-
+	this.eat = false;
+	this.control = c;
+	this.score = 0;
+	this.wall = w;
+	this.invincible = false;
+	this.dead = false;
+	this.timerPty1;
+	this.timerPty2;
 }
 
-Snake.move = function(o){
-	status = o.get();
-}
-
-Snake.prototype.Start = function(){
-	var self = this;
-	this.innervalID = setInterval(function(){Snake.move(self)},100);
-}
-
-// ‰aˆÊ’u‚ðÝ’è
-Snake.prototype.CreateFood = function(){
-	this.food.x = getRandom(canvasWidth/pLong)*pLong;
-	this.food.y = getRandom(canvasHeight/pLong)*pLong;
-	if(this.checkBody(this.food)){
-		this.CreateFood();
+// è›‡ã®body,head,tailã‚’æ›´æ–°ã™ã‚‹
+Snake.prototype.Move = function (foods){
+	// é ­ã®æ–°åº§æ¨™ã‚’å–å¾—
+	this.GetHeadPos();
+	
+	// å–°ã£ã¦ã‚‹ï¼Ÿ
+	if(this.isAte(foods)){
+		// å–°ã£ãŸ
 	} else {
-		this.DrawFood();
-	}
-}
-
-// ‰a‚ð•`‰æ
-Snake.prototype.DrawFood = function(){
-	context.fillStyle="#0000ff";
-	context.fillRect(this.food.x+1, this.food.y+1, pLong-2, pLong-2);
-}
-
-// ŽÖ“ªˆÊ’uŽæ“¾
-Snake.prototype.GetHeadPos = function (){
-	var oldHead = this.body[0];
-	var newHead = new Object();
-	if (keyListen == 1) {
-		newHead.x = oldHead.x;
-		newHead.y = oldHead.y - pLong;
-	} else if (keyListen == 2) {
-		newHead.x = oldHead.x;
-		newHead.y = oldHead.y + pLong;
-	} else if (keyListen == 3) {
-		newHead.x = oldHead.x - pLong;
-		newHead.y = oldHead.y;
-	} else if (keyListen == 4) {
-		newHead.x = oldHead.x + pLong;
-		newHead.y = oldHead.y;
-	}
-	
-	return newHead;
-}
-
-// ŽÖˆÚ“®
-Snake.prototype.Move = function(){
-	// “ª‚ÌVÀ•W‚ðŽæ“¾
-	var snakeHeadPos = this.GetHeadPos();
-	
-	// Ž€‚ÊH
-	if(this.isDead(snakeHeadPos)) {
-		clearInterval(this.innervalID);
-		alert("GAME OVER");
-	}
-	
-	// “ª‚ð’Ç‰Á‚·‚é
-	this.body.splice(0,0,snakeHeadPos);
-	
-	// ‹ò‚Á‚Ä‚éH
-	if(this.isAte(snakeHeadPos)) {
-		// ‹ò‚Á‚½
-		this.CreateFood();
-	} else {
-		// ‹ò‚Á‚Ä‚È‚¢
+		// å–°ã£ã¦ãªã„
+		// å°»å°¾ã‚’åˆ‡ã‚‹
 		this.tail.x = this.body[this.body.length-1].x;
 		this.tail.y = this.body[this.body.length-1].y;
 		this.body.splice(this.body.length-1, 1);
 	}
 	
-	// ŽÖ‚ð•`‰æ
-	this.Draw();
+	// é ­ã‚’è¿½åŠ ã™ã‚‹
+	this.body.splice(0,0,this.head);
 }
 
-Snake.prototype.isAte = function(snakeHeadPos){
-	var isAte = false;
-	if (snakeHeadPos.x == this.food.x
-	 && snakeHeadPos.y == this.food.y) {
-		isAte = true;
+// è›‡é ­ä½ç½®å–å¾—
+Snake.prototype.GetHeadPos = function (){
+	var oldHead = this.body[0];
+	var newHead = new Object();
+	if (this.control == 1) {
+		newHead.x = oldHead.x;
+		newHead.y = oldHead.y - pLong;
+	} else if (this.control == 3) {
+		newHead.x = oldHead.x;
+		newHead.y = oldHead.y + pLong;
+	} else if (this.control == 2) {
+		newHead.x = oldHead.x - pLong;
+		newHead.y = oldHead.y;
+	} else if (this.control == 4) {
+		newHead.x = oldHead.x + pLong;
+		newHead.y = oldHead.y;
 	}
 	
-	return isAte;
+	this.head = newHead;
 }
 
-Snake.prototype.isDead = function(snakeHeadPos){
-	// Ž©g‚É‚Ô‚Â‚©‚é
-	if(this.checkBody(snakeHeadPos)){
-		return true;
-	}
-	
-	// •Ç‚É‚Ô‚Â‚©‚é
-	if(snakeHeadPos.x > canvasWidth
-	 || snakeHeadPos.x < 0
-	 || snakeHeadPos.y > canvasHeight
-	 || snakeHeadPos.y < 0) {
-		return true;
-	}
-	
-	return false;
-}
-
-// ŽÖÄ•`‰æ
-Snake.prototype.Draw = function(){
-	var snakeLonger = this.body.length;
-	var pX;
-	var pY;
-	
-	// ŽÖ‚ÌK”ö‚ðØ‚é
-	if (this.tail != null) {
-		context.fillStyle="#000000";
-		context.clearRect(this.tail.x+1, this.tail.y+1, pLong-2, pLong-2);
-		clearSnake = null;
-	}
-	
-	// Ä•`‰æ
-	for (var i=0; i< this.body.length; i++) {
-		pX = this.body[i].x;
-		pY = this.body[i].y;
-		
-		context.fillStyle="#000000";
-		context.fillRect(pX, pY, pLong, pLong);
-	}
-}
-
-
-// ƒCƒ“ƒ|[ƒgÀ•W‚ÍŽÖƒ{ƒfƒB[‚Æd‚Ë‚Ä‚¢‚é‚©‚Ìƒ`ƒFƒbƒN
-// –ß‚è’lFtrue  d‚Ë‚Ä‚é
-//         false d‚Ë‚Ä‚¢‚È‚¢
-Snake.prototype.checkBody = function(pos){
-	for(var i = 0; i < this.body.length; i++) {
-		if (pos.x == this.body[i].x 
-		 && pos.y == this.body[i].y) {
-		 	return true;
+Snake.prototype.isAte = function(foods){
+	for(var i = 0; i < foods.length; i ++) {
+		if (this.head.x == foods[i].x && this.head.y == foods[i].y) {
+			this.eat = true;
+			this.score ++;
+			
+			// é£Ÿç‰©ã‚¹ã‚­ãƒ¼ãƒ«ç™ºå‹•
+			this.TriggerFoodProperty(foods[i].pty);
+			// é£Ÿç‰©å‰Šé™¤
+			foods.splice(i,1);
+			
+			return true;
 		}
 	}
 	
 	return false;
+}
+
+Snake.prototype.isDead = function(otherBody){
+	var headPos = this.body[0];
+
+	// è‡ªèº«ã«ã¶ã¤ã‹ã‚‹
+	for(var i = 1; i < this.body.length; i++) {
+		if (headPos.x == this.body[i].x 
+		 && headPos.y == this.body[i].y) {
+		 	this.dead = true;
+		}
+	}
+	
+	// ä»–ã®è›‡ã«ã¶ã¤ã‹ã‚‹
+	if(!this.invincible){
+		if(otherBody != null){
+			for(var i = 0; i < otherBody.length; i++) {
+				if (headPos.x == otherBody[i].x 
+				 && headPos.y == otherBody[i].y) {
+				 	this.dead = true;
+				}
+			}
+		}
+	}
+	
+	// å£ã«ã¶ã¤ã‹ã‚‹
+	if(this.wall){
+		if(headPos.x >= canvasWidth
+		 || headPos.x < 0
+		 || headPos.y >= canvasHeight
+		 || headPos.y < 0) {
+			this.dead = true;
+		}
+	} else {
+		if(headPos.x >= canvasWidth){
+			headPos.x = 0;
+		} else if (headPos.x < 0){
+			headPos.x = canvasWidth;
+		}
+		
+		if(headPos.y >= canvasHeight){
+			headPos.y = 0;
+		} else if (headPos.y < 0){
+			headPos.y = canvasHeight;
+		}
+	}
+}
+
+// è›‡å†æç”»
+Snake.prototype.Draw = function(color){
+	var snakeLonger = this.body.length;
+	var pX;
+	var pY;
+	
+	// è›‡ã®å°»å°¾ã‚’åˆ‡ã‚‹
+	if (this.tail != null) {
+		context.fillStyle=color;
+		context.clearRect(this.tail.x+1, this.tail.y+1, pLong-2, pLong-2);
+	}
+	
+	// å†æç”»
+	for (var i=0; i< this.body.length; i++) {
+		pX = this.body[i].x;
+		pY = this.body[i].y;
+		
+		context.fillStyle=color;
+		context.fillRect(pX+1, pY+1, pLong-2, pLong-2);
+	}
+}
+
+// é£Ÿç‰©ã‚¹ã‚­ãƒ¼ãƒ«ç™ºå‹•
+Snake.prototype.TriggerFoodProperty = function(pty){
+	var player = this.name;
+	var millisec = 5000;
+
+	// ï¼•ç§’é–“ã€å¢ƒç•Œãªã—ã«ãªã‚‹
+	if(wall && (pty == 1)){
+		// å‰å›žã®ã‚¿ã‚¤ãƒžãƒ¼ã‚’æ¶ˆåŽ»
+		if(this.timerPty1 != null && this.timerPty1 != undefined){
+			clearTimeout(this.timerPty1);
+		}
+		
+		// å¢ƒç•Œãªã—
+		var statusId = "#" + player + "_status" + pty;
+		this.wall = false;
+		$(statusId).show();
+		
+		// ï¼•ç§’å¾Œã€å¢ƒç•Œã‚ã‚Š
+		var self = this;
+		self.timerPty1 = setTimeout(function(){
+										self.wall = true;
+										$(statusId).hide();
+									},
+									millisec);
+	}
+	
+	// ï¼•ç§’é–“ã€ç„¡æ•µ
+	if(pty == 2){
+		// å‰å›žã®ã‚¿ã‚¤ãƒžãƒ¼ã‚’æ¶ˆåŽ»
+		if(this.timerPty2 != null && this.timerPty2 != undefined){
+			clearTimeout(this.timerPty2);
+		}
+		
+		// ç„¡æ•µ
+		var statusId = "#" + player + "_status" + pty;
+		this.invincible = true;
+		$(statusId).show();
+		
+		// ï¼•ç§’å¾Œã€ç„¡æ•µãªã—
+		var self = this;
+		self.timerPty2 = setTimeout(function(){
+										self.invincible = false;
+										$(statusId).hide();
+									},
+									millisec);
+	}
+	
+	// 5ç§’é–“ã€ãƒ€ãƒ–ãƒ«ãƒ•ãƒ¼ãƒ‰
+	if(pty == 3){
+		doubleFood = 1;
+	}
 }
