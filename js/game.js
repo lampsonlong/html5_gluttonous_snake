@@ -17,6 +17,7 @@ function Game(player){
 	this.innervalID = null;
 	this.ret = null;
 	
+	/*
 	$(window).keydown(self ,function(event){
 		if(self.p2 != null) {
 			// ëOâÒÉLÅ[ï€ë∂
@@ -65,7 +66,7 @@ function Game(player){
 				setTimeout(self.p1.control = p1key, 100);
 			}
 		}
-	});
+	});*/
 }
 
 Game.process = function(o){

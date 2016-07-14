@@ -1,4 +1,5 @@
 function Snake(n,x,y,w,c){
+	var self = this;
 	this.name = n;
 	this.head = new Object();
 	this.head.x = x;
@@ -16,6 +17,54 @@ function Snake(n,x,y,w,c){
 	this.dead = false;
 	this.timerPty1;
 	this.timerPty2;
+	
+	$(window).keydown(self ,function(event){
+		if(self.name == "p1") {
+			// 前回キー保存
+			var p1key = self.control;
+			
+			if(event.which == "87"){
+				// upキー
+				self.control = 1;
+			} else if(event.which == "83"){
+				// downキー
+				self.control = 3;
+			} else if(event.which == "65"){
+				// leftキー
+				self.control = 2;
+			} else if(event.which == "68"){
+				// rightキー
+				self.control = 4;
+			}
+			
+			if(Math.abs(self.control - self.direction) == 2){
+				// 遅延0.1秒押下
+				setTimeout(self.control = p1key, 100);
+			}
+		} else {
+			// 前回キー保存
+			var p2key = self.control;
+			
+			if(event.which == "38"){
+				// upキー
+				self.control = 1;
+			} else if(event.which == "40"){
+				// downキー
+				self.control = 3;
+			} else if(event.which == "37"){
+				// leftキー
+				self.control = 2;
+			} else if(event.which == "39"){
+				// rightキー
+				self.control = 4;
+			}
+			
+			if(Math.abs(self.control - self.direction) == 2){
+				// 遅延0.1秒押下
+				setTimeout(self.control = p2key, 100);
+			}
+		}
+	});
 }
 
 // 蛇のbody,head,tailを更新する
