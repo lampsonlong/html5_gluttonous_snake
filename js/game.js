@@ -16,57 +16,6 @@ function Game(player){
 	this.get = function(){return this.Process(self);}
 	this.innervalID = null;
 	this.ret = null;
-	
-	/*
-	$(window).keydown(self ,function(event){
-		if(self.p2 != null) {
-			// 前回キー保存
-			var p2key = self.p2.control;
-		
-			if(event.which == "38"){
-				// upキー
-				self.p2.control = 1;
-			} else if(event.which == "40"){
-				// downキー
-				self.p2.control = 3;
-			} else if(event.which == "37"){
-				// leftキー
-				self.p2.control = 2;
-			} else if(event.which == "39"){
-				// rightキー
-				self.p2.control = 4;
-			}
-			
-			if(Math.abs(self.p2.control - self.p1.direction) == 2){
-				// 遅延0.1秒押下
-				setTimeout(self.p2.control = p2key, 100);
-			}
-		}
-		
-		if(self.p1 != null) {
-			// 前回キー保存
-			var p1key = self.p1.control;
-			
-			if(event.which == "87"){
-				// upキー
-				self.p1.control = 1;
-			} else if(event.which == "83"){
-				// downキー
-				self.p1.control = 3;
-			} else if(event.which == "65"){
-				// leftキー
-				self.p1.control = 2;
-			} else if(event.which == "68"){
-				// rightキー
-				self.p1.control = 4;
-			}
-			
-			if(Math.abs(self.p1.control - self.p1.direction) == 2){
-				// 遅延0.1秒押下
-				setTimeout(self.p1.control = p1key, 100);
-			}
-		}
-	});*/
 }
 
 Game.process = function(o){
