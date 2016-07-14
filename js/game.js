@@ -37,8 +37,8 @@ function Game(player){
 			}
 			
 			if(Math.abs(self.p2.control - self.p1.direction) == 2){
-				// ’x‰„0.8•b‰Ÿ‰º
-				setTimeout(self.p2.control = p2key, 800);
+				// ’x‰„0.1•b‰Ÿ‰º
+				setTimeout(self.p2.control = p2key, 100);
 			}
 		}
 		
@@ -61,8 +61,8 @@ function Game(player){
 			}
 			
 			if(Math.abs(self.p1.control - self.p1.direction) == 2){
-				// ’x‰„0.8•b‰Ÿ‰º
-				setTimeout(self.p1.control = p1key, 800);
+				// ’x‰„0.1•b‰Ÿ‰º
+				setTimeout(self.p1.control = p1key, 100);
 			}
 		}
 	});
