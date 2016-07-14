@@ -1,5 +1,5 @@
 function Game(player){
-	this.self = this;
+	var self = this;
 	this.p1 = null;
 	this.p2 = null;
 	this.wall = wall;
@@ -12,11 +12,60 @@ function Game(player){
 		this.p2 = new Snake("p2", canvasWidth*4/5, canvasHeight*4/5, this.wall, 2);
 	}
 	
-	//this.food = new Object();
 	this.foods = new Array();
 	this.get = function(){return this.Process(self);}
 	this.innervalID = null;
 	this.ret = null;
+	
+	$(window).keydown(self ,function(event){
+		if(self.p2 != null) {
+			// 前回キー保存
+			var p2key = self.p2.control;
+		
+			if(event.which == "38"){
+				// upキー
+				self.p2.control = 1;
+			} else if(event.which == "40"){
+				// downキー
+				self.p2.control = 3;
+			} else if(event.which == "37"){
+				// leftキー
+				self.p2.control = 2;
+			} else if(event.which == "39"){
+				// rightキー
+				self.p2.control = 4;
+			}
+			
+			if(Math.abs(self.p2.control - self.p1.direction) == 2){
+				// 遅延0.8秒押下
+				setTimeout(self.p2.control = p2key, 800);
+			}
+		}
+		
+		if(self.p1 != null) {
+			// 前回キー保存
+			var p1key = self.p1.control;
+			
+			if(event.which == "87"){
+				// upキー
+				self.p1.control = 1;
+			} else if(event.which == "83"){
+				// downキー
+				self.p1.control = 3;
+			} else if(event.which == "65"){
+				// leftキー
+				self.p1.control = 2;
+			} else if(event.which == "68"){
+				// rightキー
+				self.p1.control = 4;
+			}
+			
+			if(Math.abs(self.p1.control - self.p1.direction) == 2){
+				// 遅延0.8秒押下
+				setTimeout(self.p1.control = p1key, 800);
+			}
+		}
+	});
 }
 
 Game.process = function(o){
@@ -33,14 +82,6 @@ Game.prototype.Process = function(){
 		var selfP1 = this.p1;
 		var selfP2 = this.p2;
 		
-		if(Math.abs(selfP1.control - p1key) != 2){
-			selfP1.control = p1key;
-		}
-		
-		if(Math.abs(selfP2.control - p2key) != 2){
-			selfP2.control = p2key;
-		}
-		
 		// 蛇移動
 		selfP1.Move(this.foods);
 		selfP2.Move(this.foods);
@@ -55,9 +96,9 @@ Game.prototype.Process = function(){
 			selfP1.eat = false;
 			selfP2.eat = false;
 			if(doubleFood > 0){
+				this.CreateFood();
+				this.CreateFood();
 				doubleFood --;
-				this.CreateFood();
-				this.CreateFood();
 			} else {
 				if(this.foods.length > 0){
 					this.foods = new Array();
@@ -79,10 +120,6 @@ Game.prototype.Process = function(){
 	} else if(this.model == 1) {
 		var selfP1 = this.p1;
 		
-		if(Math.abs(selfP1.control - p1key) != 2 && selfP1.control != p1key){
-			selfP1.control = p1key;
-		}
-		
 		selfP1.Move(this.foods);
 		
 		selfP1.isDead(null);
@@ -91,9 +128,9 @@ Game.prototype.Process = function(){
 		if(selfP1.eat){
 			selfP1.eat = false;
 			if(doubleFood > 0){
+				this.CreateFood();
+				this.CreateFood();
 				doubleFood --;
-				this.CreateFood();
-				this.CreateFood();
 			} else {
 				if(this.foods.length == 0){
 					this.CreateFood();
@@ -110,6 +147,9 @@ Game.prototype.Process = function(){
 		// 結果判定と表示
 		this.SingleResult(selfP1);
 	}
+	
+	// ログ
+	this.WriteLog();
 }
 
 Game.prototype.BattleResult = function(selfP1, selfP2){
@@ -146,6 +186,7 @@ Game.prototype.CreateFood = function(){
 	var food = new Object();
 	food.x = getRandom(canvasWidth/pLong)*pLong;
 	food.y = getRandom(canvasHeight/pLong)*pLong;
+	
 	food.pty = getRandom(6);
 	if(doubleFood > 0 && food.pty == 3){
 		food.pty = 0;
@@ -155,7 +196,7 @@ Game.prototype.CreateFood = function(){
 		this.CreateFood();
 	} else {
 		this.foods.push(food);
-		this.DrawFoods();
+		this.DrawFoods(food);
 	}
 }
 
@@ -188,23 +229,22 @@ Game.prototype.Check = function(food){
 }
 
 // 食物再描画
-Game.prototype.DrawFoods = function(){
-	for(var i = 0; i < this.foods.length; i ++){
-		if (this.wall && this.foods[i].pty == 1) {
+Game.prototype.DrawFoods = function(food) {
+
+		if (this.wall && food.pty == 1) {
 			context.fillStyle="orange";
-		} else if (this.foods[i].pty == 2) {
+		} else if (food.pty == 2) {
 			context.fillStyle="pink";
-		} else if (this.foods[i].pty == 3) {
+		} else if (food.pty == 3) {
 			context.fillStyle="black";
 		}  else {
 			context.fillStyle="green";
 		}
-		context.fillRect(this.foods[i].x+1, this.foods[i].y+1, pLong-2, pLong-2);
-	}
+		context.fillRect(food.x+1, food.y+1, pLong-2, pLong-2);
 }
 
 // 蛇再描画
-Game.prototype.Draw = function(){
+Game.prototype.Draw = function() {
 	if(this.p1 != null){
 		var selfP1 = this.p1;
 		selfP1.Draw("blue");
@@ -212,5 +252,14 @@ Game.prototype.Draw = function(){
 	if(this.p2 != null){
 		var selfP2 = this.p2;
 		selfP2.Draw("red");
+	}
+}
+
+Game.prototype.WriteLog = function() {
+	// 食物座標ログ
+	$("#foodPos").html("");
+	for (var i = 0; i < this.foods.length; i++) {
+		var foodPosLog = "(" + this.foods[i].x/pLong + "," + this.foods[i].y/pLong + "," + this.foods[i].pty +");";
+		$("#foodPos").append(foodPosLog);
 	}
 }

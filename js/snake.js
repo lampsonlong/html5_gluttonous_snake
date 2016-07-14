@@ -3,12 +3,13 @@ function Snake(n,x,y,w,c){
 	this.head = new Object();
 	this.head.x = x;
 	this.head.y = y;
-
+	
 	this.body = new Array();
 	this.body.push(this.head);
 	this.tail = new Object();
 	this.eat = false;
 	this.control = c;
+	this.direction = c;
 	this.score = 0;
 	this.wall = w;
 	this.invincible = false;
@@ -55,6 +56,7 @@ Snake.prototype.GetHeadPos = function (){
 		newHead.y = oldHead.y;
 	}
 	
+	this.direction = this.control;
 	this.head = newHead;
 }
 

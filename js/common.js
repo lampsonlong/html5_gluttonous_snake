@@ -1,42 +1,10 @@
 var canvasWidth = 500; // 画布の長さ
 var canvasHeight = 300; // 画布の幅
 var pLong = 20; // ピクセルの長さ
-var p1key;
-var p2key;
 var speed = 100;
 var model = 1;  // 1:一人モード  2:二人バトルモード
 var wall = true;
 var doubleFood = 0;
-
-$(window).keydown(function(event){
-	if(event.which == "38"){
-		// upキー
-		p2key = 1;
-	} else if(event.which == "40"){
-		// downキー
-		p2key = 3;
-	} else if(event.which == "37"){
-		// leftキー
-		p2key = 2;
-	} else if(event.which == "39"){
-		// rightキー
-		p2key = 4;
-	}
-	
-	if(event.which == "87"){
-		// upキー
-		p1key = 1;
-	} else if(event.which == "83"){
-		// downキー
-		p1key = 3;
-	} else if(event.which == "65"){
-		// leftキー
-		p1key = 2;
-	} else if(event.which == "68"){
-		// rightキー
-		p1key = 4;
-	}
-});
 
 $(document).ready(function(){
 	init();
@@ -48,8 +16,6 @@ function init(){
 	$("#p1score").html("0");
 	$("#p2block").hide();
 	$("#p2score").html("0");
-	p1key = 4;
-	p2key = 2;
 }
 
 function initModel1(){
@@ -129,9 +95,9 @@ function startNewGame(p){
 	newgame.Start();
 }
 
-// ランダム整数作成
+// ランダム整数作成 範囲[0,n)
 function getRandom(n){
-	return Math.floor(Math.random()*n)
+	return Math.floor(Math.random()*n);
 }
 
 // 背景初期化
