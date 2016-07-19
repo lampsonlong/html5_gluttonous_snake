@@ -14,6 +14,7 @@
 <script src="js/common.js"></script>
 <script src="js/game.js"></script>
 <script src="js/snake.js"></script>
+<script src="js/boss.js"></script>
 <script src="js/bootstrap.min.js"></script>
 
 </head>
@@ -27,29 +28,60 @@
 	
 	<div class="row" style="margin-top:5em;">
 	<div class="col-sm-offset-2 col-sm-2">
-		<div id="p1block">
+		<div id="p1block" style="font-size:1.5em;">
 			<div id="p1scoreDiv">
 			<label for="p1">P1</label>
-			<p class="bg-primary" id="p1score" style="font-size:4em;"></p>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="p1score">得分</label>
+					<div class="col-sm-8">
+						<p class="form-control-static bg-primary" id="p1score">0</p>
+					</div>
+				</div>
+				<br/>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="p1combo">连击</label>
+					<div class="col-sm-8">
+						<p class="form-control-static bg-primary" id="p1combo">0</p>
+					</div>
+				</div>
 			</div>
 			<div id="p1statusDiv">
-				<span class="glyphicon glyphicon-refresh" id="p1_status1" style="font-size:2em;"></span>
-				<span class="glyphicon glyphicon-star" id="p1_status2" style="font-size:2em;"></span>
+				<span class="glyphicon glyphicon-refresh" id="p1_status1"></span>
+				<span class="glyphicon glyphicon-star" id="p1_status2"></span>
 			</div>
 		</div>
 	</div>
-    <div class="col-sm-6" id="canvasDiv" style="width:550px;">
+    <div class="col-sm-4" style="width:550px;">
+    	<div class="progress" id="BossHP">
+		  <div class="progress-bar progress-bar-success" id="BossHPBar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+		    100%
+		  </div>
+		</div>
+		<div id="canvasDiv">
     	<img src="img/snakelogo.jpg" width="100%" class="img-rounded">
+    	</div>
     </div>
     <div class="col-sm-2">
-    	<div id="p2block">
+    	<div id="p2block" style="font-size:1.5em;">
 	    	<div id="p2scoreDiv">
 			<label for="p2">P2</label>
-			<p class="bg-danger" id="p2score" style="font-size:4em;"></p>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="p2score">得分</label>
+					<div class="col-sm-8">
+						<p class="form-control-static bg-danger" id="p2score">0</p>
+					</div>
+				</div>
+				<br/>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="p2combo">连击</label>
+					<div class="col-sm-8">
+						<p class="form-control-static bg-danger" id="p2combo">0</p>
+					</div>
+				</div>
 			</div>
 			<div id="p2statusDiv">
-				<span class="glyphicon glyphicon-refresh" id="p2_status1"  style="font-size:2em;"></span>
-				<span class="glyphicon glyphicon-star" id="p2_status2" style="font-size:2em;"></span>
+				<span class="glyphicon glyphicon-refresh" id="p2_status1"></span>
+				<span class="glyphicon glyphicon-star" id="p2_status2"></span>
 			</div>
 		</div>
 	</div>
@@ -63,7 +95,16 @@
 			<div class="col-sm-2">
 				<a class="btn btn-primary btn-lg btn-block" href="javascript:void(0);" onclick="start(2)" role="button">对战模式</a>
 			</div>
-			<div class="col-sm-1" align="left">
+		</div>
+		<br/>
+		<div class="row">
+			<div class="col-sm-offset-4 col-sm-2">
+				<a class="btn btn-primary btn-lg btn-block" href="javascript:void(0);" onclick="start(4)" role="button">单人挑战模式</a>
+			</div>
+			<div class="col-sm-2">
+				<a class="btn btn-primary btn-lg btn-block" href="javascript:void(0);" onclick="start(3)" role="button">多人协力模式</a>
+			</div>
+			<div class="col-sm-2" align="left">
 				<div class="row">
 					<div class="dropdown">
 					  <label for="dropdown">速度:</label>
@@ -94,7 +135,7 @@
 					<div class="dropdown">
 					  <label for="dropdown">边界:</label>
 					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					    <span id="showWall">有边界</span>
+					    <span id="showWall">无边界</span>
 					    <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -109,8 +150,8 @@
 	
 	<div class="log">
 		<ul class="list-unstyled">
-			<li>食物座標：<span id="foodPos"></span></li>
-		</ul
+			<li>[Debug]食物座標：<span id="foodPos"></span></li>
+		</ul>
 	</div>
 </div>
 

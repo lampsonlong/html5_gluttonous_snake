@@ -2,9 +2,10 @@ var canvasWidth = 500; // 画布の長さ
 var canvasHeight = 300; // 画布の幅
 var pLong = 20; // ピクセルの長さ
 var speed = 100;
-var model = 1;  // 1:一人モード  2:二人バトルモード
-var wall = true;
+var mode = 1;  // 1:一人モード  2:二人バトルモード 3:二人協力モード
+var wall = false;
 var doubleFood = 0;
+var hp = 10000;
 
 $(document).ready(function(){
 	init();
@@ -16,16 +17,17 @@ function init(){
 	$("#p1score").html("0");
 	$("#p2block").hide();
 	$("#p2score").html("0");
+	$("#BossHP").hide();
 }
 
-function initModel1(){
+function initmode1(){
 	$("#p1block").show();
 	$("#p1statusDiv span").each(function(){
 		$(this).hide();
 	});
 }
 
-function initModel2(){
+function initmode2(){
 	$("#p1block").show();
 	$("#p2block").show();
 	
@@ -38,6 +40,29 @@ function initModel2(){
 	});
 }
 
+function initmode3(){
+	$("#p1block").show();
+	$("#p2block").show();
+	
+	$("#p1statusDiv span").each(function(e){
+		$(this).hide();
+	});
+	
+	$("#p2statusDiv span").each(function(e){
+		$(this).hide();
+	});
+	$("#BossHP").show();
+}
+
+function initmode4(){
+	$("#p1block").show();
+	
+	$("#p1statusDiv span").each(function(e){
+		$(this).hide();
+	});
+	
+	$("#BossHP").show();
+}
 
 // Canvas初期化
 function prepareCanvas()
@@ -60,7 +85,7 @@ function prepareCanvas()
 
 function start(m){
 	init();
-	model = m;
+	mode = m;
 	$(".startBtn").hide();
 	$("#canvasDiv").html("");
 	
@@ -84,10 +109,14 @@ function showResult(ret){
 }
 
 function startNewGame(p){
-	if(model == 1){
-		initModel1();
-	} else if (model == 2){
-		initModel2();
+	if(mode == 1){
+		initmode1();
+	} else if (mode == 2){
+		initmode2();
+	} else if (mode == 3){
+		initmode3();
+	} else if (mode == 4){
+		initmode4();
 	}
 
 	var newgame = new Game();
@@ -145,5 +174,6 @@ function setSize(size,text){
 	}
 	
 	$("#canvasDiv").css("width",(canvasWidth + 50) + 'px');
+	$("#canvasDiv").parent().css("width",(canvasWidth + 50) + 'px');
 	$("#showSize").html(text);
 }

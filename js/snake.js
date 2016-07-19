@@ -12,6 +12,7 @@ function Snake(n,x,y,w,c){
 	this.control = c;
 	this.direction = c;
 	this.score = 0;
+	this.combo = 0;
 	this.wall = w;
 	this.invincible = false;
 	this.dead = false;
@@ -69,6 +70,10 @@ function Snake(n,x,y,w,c){
 
 // 蛇のbody,head,tailを更新する
 Snake.prototype.Move = function (foods){
+	if(this.dead){
+		return;
+	}
+
 	// 頭の新座標を取得
 	this.GetHeadPos();
 	
@@ -109,14 +114,38 @@ Snake.prototype.GetHeadPos = function (){
 	this.head = newHead;
 }
 
+// スコア、コンボの計算と画面更新
+Snake.prototype.ScoreStatistics = function(rivalIsEat, boss) {
+	// コンボ計算
+	if(this.eat){
+		this.combo ++;
+	} else if(rivalIsEat){
+		this.combo = 0;
+	}
+	
+	// スコア計算
+	if(this.eat){
+		var plusScore = Math.round((1+this.combo*0.1)*100);
+		this.score += plusScore;
+		if(boss != null){
+			boss.hp -= plusScore;
+		}
+	}
+	
+	// スコアコンボ画面更新
+	$("#" + this.name + "score").html(this.score);
+	$("#" + this.name + "combo").html(this.combo);
+}
+
 Snake.prototype.isAte = function(foods){
 	for(var i = 0; i < foods.length; i ++) {
 		if (this.head.x == foods[i].x && this.head.y == foods[i].y) {
 			this.eat = true;
-			this.score ++;
 			
 			// 食物スキール発動
-			this.TriggerFoodProperty(foods[i].pty);
+			if(this.name != "boss"){
+				this.TriggerFoodProperty(foods[i].pty);
+			}
 			// 食物削除
 			foods.splice(i,1);
 			
@@ -127,8 +156,22 @@ Snake.prototype.isAte = function(foods){
 	return false;
 }
 
-Snake.prototype.isDead = function(otherBody){
+Snake.prototype.isDead = function(body, bossBody){
+	if(this.dead){
+		return;
+	}
+
 	var headPos = this.body[0];
+	var otherBody = new Array();
+	if(body == null && bossBody == null) {
+		otherBody = null;
+	} else if(body == null){
+		otherBody = otherBody.concat(bossBody);
+	} else if(bossBody == null){
+		otherBody = otherBody.concat(body);
+	} else {
+		otherBody = otherBody.concat(body,bossBody);
+	}
 
 	// 自身にぶつかる
 	for(var i = 1; i < this.body.length; i++) {
@@ -175,13 +218,16 @@ Snake.prototype.isDead = function(otherBody){
 
 // 蛇再描画
 Snake.prototype.Draw = function(color){
+	if(this.dead){
+		return;
+	}
+	
 	var snakeLonger = this.body.length;
 	var pX;
 	var pY;
 	
 	// 蛇の尻尾を切る
 	if (this.tail != null) {
-		context.fillStyle=color;
 		context.clearRect(this.tail.x+1, this.tail.y+1, pLong-2, pLong-2);
 	}
 	
@@ -193,6 +239,31 @@ Snake.prototype.Draw = function(color){
 		context.fillStyle=color;
 		context.fillRect(pX+1, pY+1, pLong-2, pLong-2);
 	}
+}
+
+// 蛇クリア
+Snake.prototype.Clear = function(){
+	if(this.body == null){
+		return;
+	}
+	var snakeLonger = this.body.length;
+	var pX;
+	var pY;
+	
+	// 蛇の尻尾を切る
+	if (this.tail != null) {
+		context.clearRect(this.tail.x+1, this.tail.y+1, pLong-2, pLong-2);
+	}
+	
+	for (var i=0; i< this.body.length; i++) {
+		pX = this.body[i].x;
+		pY = this.body[i].y;
+		
+		context.clearRect(pX+1, pY+1, pLong-2, pLong-2);
+	}
+	
+	this.body = null;
+	$("#" + this.name + "statusDiv").html("You Die.");
 }
 
 // 食物スキール発動
